@@ -1,0 +1,21 @@
+body {
+  height: 100%;
+  width: 100%;
+  background-color: lightblue;
+}
+
+#parent {
+  display: table;
+  width: 100%;
+}
+
+#form_essay {
+   display: table-cell;
+   text-align: center;
+   vertical-align: middle;
+}
+
+#txt_area {
+  margin-bottom: 30px;
+  resize: none;
+}
