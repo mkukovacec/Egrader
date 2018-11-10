@@ -4,7 +4,7 @@ import pkgutil
 import inspect
 
 def get_all_features(module=None):
-
+    all_values = []
     files = ['features/'+module+'/'+name for name in os.listdir('./features/'+module)]
     for fname in files:
         if fname.endswith('.pyc'):
@@ -19,4 +19,6 @@ def get_all_features(module=None):
             if name.startswith('__'):
                 continue
             globals()[orig_name] = value
-            __all__.append(orig_name)
+            all_values.append(orig_name)
+
+    return all_values
