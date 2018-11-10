@@ -2,11 +2,11 @@ import numpy as np
 import features as all_features
 import pickle
 
-def transform(data):
+def transform(data, module=None):
     matrix = np.empty((data.shape[0], 1))
 
     features = [getattr(all_features, name)
-                for name in all_features.__all__]
+                for name in all_features.get_all_features(module)]
 
     for feature in features:
 
