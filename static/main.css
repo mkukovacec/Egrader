@@ -4,18 +4,49 @@ body {
   background-color: lightblue;
 }
 
+#title {
+  display: table;
+  width: 100%;
+  text-align: center;
+}
+
 #parent {
   display: table;
   width: 100%;
+  height: 90%;
 }
 
 #form_essay {
    display: table-cell;
    text-align: center;
    vertical-align: middle;
+   width: 50%;
+   height: 100%;
+}
+
+#essay_scores {
+   width: 50%;
+   height: 100%;
+   display: table-cell;
+   text-align: center;
+   vertical-align: middle;
+   horizontal-align: middle;
 }
 
 #txt_area {
   margin-bottom: 30px;
   resize: none;
+}
+
+table {
+  width: 60%;
+  margin: 0 auto;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid black;
+    height: 50px;
+    border-collapse: collapse;
 }

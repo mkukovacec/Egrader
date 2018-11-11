@@ -1,5 +1,6 @@
 import numpy as np
 import features as all_features
+import os.path
 import pickle
 
 def transform(data, module=None):
@@ -20,5 +21,9 @@ def preprocess_text(text):
 
     pass
 
-def load_model(filename):
-    return pickle.load(open(filename, 'rb'))
+def load_model(folder_name, module):
+    filename = folder_name+'/'+module+'_module'
+    if os.path.isfile(filename):
+        return pickle.load(open(folder_name+'/'+module+'_module', 'rb'))
+
+    return None

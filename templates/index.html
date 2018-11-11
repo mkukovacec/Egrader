@@ -8,21 +8,55 @@
     <title>Egrader</title>
 </head>
 <body>
+  <div id="title">
+    <h1>Online essay grader</h1>
+  </div>
   <div id="parent">
 
     <form id="form_essay" method="POST">
-      <h1>Online essay grader</h1>
+
        Essay Title:<br>
        <input type="text" name="title" value={{ title }}><br>
        Essay:<br>
        <textarea id="txt_area" rows="35" cols="90" name="essay">{{ essay }}</textarea><br>
 
        <input type="submit" value="Grade it">
-       {% if score != '0' %}
-         <br>
-         <p> Score is: {{ score }} </p>
-       {% endif %}
      </form>
+
+     <div id="essay_scores">
+       <table>
+        <tr>
+          <td>Essay content</td>
+          <td>
+            {{content_score}}
+          </td>
+        </tr>
+        <tr>
+          <td>Essay development</td>
+          <td>
+            {{development_score}}
+          </td>
+        </tr>
+        <tr>
+          <td>Essay grammar</td>
+          <td>
+            {{grammar_score}}
+          </td>
+        </tr>
+        <tr>
+          <td>Essay organization</td>
+          <td>
+            {{organization_score}}
+          </td>
+        </tr>
+        <tr>
+          <td>Essay style</td>
+          <td>
+            {{style_score}}
+          </td>
+        </tr>
+      </table>
+     </div>
   </div>
 </body>
 </html>
