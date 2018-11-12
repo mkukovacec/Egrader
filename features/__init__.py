@@ -10,9 +10,8 @@ def get_all_features(module=None):
         if fname.endswith('.pyc'):
             os.remove(fname)
 
-    for loader, orig_name, is_pkg in pkgutil.walk_packages(__path__):
+    for loader, orig_name, is_pkg in pkgutil.walk_packages(files):
         module = loader.find_module(orig_name).load_module(orig_name)
-
         for name, value in inspect.getmembers(module):
             if name != 'Feature':
                 continue

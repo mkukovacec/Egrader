@@ -1,5 +1,6 @@
 import numpy as np
 import nltk
+from nltk.corpus import wordnet
 
 class Feature(object):
 
@@ -11,9 +12,16 @@ class Feature(object):
     def run(self):
 
         array = []
-        #TODO implement
-        for text in self.dataset:
 
-            array.append(0.0)
+        for text in self.dataset:
+            counter = 0
+            sentence_count = 0
+            for sentence in nltk.tokenize.sent_tokenize(text):
+                if sentence.startswith('"') and sentence.endswith('"') or sentence.startswith("'") and sentence.endswith("'"):
+                    sentence_count += 1
+
+                counter += 1
+
+            array.append(float(sentence_count/counter))
 
         return np.matrix(array)
