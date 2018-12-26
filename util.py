@@ -8,13 +8,11 @@ import pickle
 def transform(data, module=None):
     matrix = np.empty((data.shape[0], 1))
 
-    features = [getattr(all_features, name)
-                for name in all_features.get_all_features(module)]
-
+    features = [feat for feat in all_features.get_all_features(module)]
     for feature in features:
-
-        feature = feature(data)
-        feature_values = feature.run()
+        feat = feature(data)
+        feature_values = feat.run()
+        print (feature_values)
         matrix = np.concatenate((matrix, feature_values.T), axis=1)
 
     return np.array(matrix, dtype=np.float64)

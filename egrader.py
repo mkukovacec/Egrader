@@ -33,9 +33,12 @@ def my_form_post():
             title=essay_title, essay=essay_text)
 
 def predictor(essay_title = None, essay_text = None, module=None):
-    if empty(essay_title) or empty(essay_text) or empty(module) or empty(modules[module]):
+    if empty(essay_title) or empty(essay_text) or empty(module):
         return '0'
-    return "{0}/1".format(round(modules[module].predict(transform(np.array([essay_text]), module))[0][0], 3))
+
+    result = modules[module].predict(transform(np.array([essay_text]), module))
+    print (result)
+    return "{0}/1".format(round(result[0][0], 3))
 
 def empty(variable):
     if variable is None or len(variable)==0:

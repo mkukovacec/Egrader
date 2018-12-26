@@ -17,7 +17,7 @@ class Feature(object):
         for text in self.dataset:
             array.append(len(tokenizer.tokenize(text)))
 
-        divisor = max(max(array), 1)
+        divisor = 2000
         counts = [float(count/divisor) for count in array]
 
         return np.matrix(counts)

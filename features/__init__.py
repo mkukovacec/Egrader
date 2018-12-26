@@ -1,7 +1,6 @@
 import os
 
-import pkgutil
-import inspect
+from importlib import import_module
 
 def get_all_features(module=None):
     all_values = []
@@ -10,14 +9,12 @@ def get_all_features(module=None):
         if fname.endswith('.pyc'):
             os.remove(fname)
 
-    for loader, orig_name, is_pkg in pkgutil.walk_packages(files):
-        module = loader.find_module(orig_name).load_module(orig_name)
-        for name, value in inspect.getmembers(module):
-            if name != 'Feature':
-                continue
-            if name.startswith('__'):
-                continue
-            globals()[orig_name] = value
-            all_values.append(orig_name)
+    for filename in files:
+        if '.py' not in filename or '__' in filename:
+            continue
+
+        module_name = filename.split('/')[-1].split('.')[0]
+        class_module = import_module('features.' + module +'.' + module_name)
+        all_values.append(getattr(class_module, 'Feature'))
 
     return all_values
