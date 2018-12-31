@@ -1,23 +1,17 @@
 from flask import Flask, request, render_template
-from util import transform, load_model
+from util import transform, load_model, rule_score
 import numpy as np
 app = Flask(__name__)
 
 modules = {}
 modules['content'] = load_model('models','content')
-modules['development'] = load_model('models','development')
 modules['grammar'] = load_model('models','grammar')
-modules['organization'] = load_model('models','organization')
-modules['style'] = load_model('models','style')
 
 @app.route('/')
 def index():
     return render_template("index.html",
             content_score=predictor('', '', "content"),
-            development_score=predictor('', '', "development"),
             grammar_score=predictor('', '', "grammar"),
-            organization_score=predictor('', '', "organization"),
-            style_score=predictor('', '', "style"),
             title='', essay='')
 
 @app.route('/', methods=['POST'])
@@ -26,10 +20,7 @@ def my_form_post():
     essay_text = request.form['essay']
     return render_template("index.html",
             content_score=predictor(essay_title, essay_text, "content"),
-            development_score=predictor(essay_title, essay_text, "development"),
-            grammar_score=predictor(essay_title, essay_text, "grammar"),
-            organization_score=predictor(essay_title, essay_text, "organization"),
-            style_score=predictor(essay_title, essay_text, "style"),
+            grammar_score=rule_out(essay_title, essay_text, "grammar"),
             title=essay_title, essay=essay_text)
 
 def predictor(essay_title = None, essay_text = None, module=None):
@@ -37,8 +28,13 @@ def predictor(essay_title = None, essay_text = None, module=None):
         return '0'
 
     result = modules[module].predict(transform(np.array([essay_text]), module))
-    print (result)
     return "{0}/1".format(round(result[0][0], 3))
+
+def rule_out(essay_title, essay_text, module = None):
+    result = rule_score(module, essay_title, essay_text)
+
+    return "{0}/1".format(round(result, 3)) 
+
 
 def empty(variable):
     if variable is None or len(variable)==0:

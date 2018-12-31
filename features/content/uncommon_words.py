@@ -1,4 +1,4 @@
-import features.development.resources as res
+import features.content.resources as res
 import numpy as np
 import nltk
 from nltk.corpus import wordnet
@@ -21,14 +21,16 @@ class Feature(object):
                 if sentence.startswith('"') and sentence.endswith('"'):
                     continue
                 for word in nltk.word_tokenize(sentence):
-                    if (word.startswith('$')):
+                    if (not wordnet.synsets(word.lower()) or word.startswith('$')):
                         continue
 
                     counter+=1
 
-                    if (wordnet.synsets(word.lower()) and word.lower() not in res.__words__):
+                    if (word.lower() not in res.__words__):
                         uncommon+=1
-
-            array.append(float(uncommon/counter))
+            if counter == 0:
+                array.append(0.0)
+            else:
+                array.append(float(uncommon/counter))
 
         return np.matrix(array)

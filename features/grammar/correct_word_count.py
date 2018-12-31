@@ -16,16 +16,13 @@ class Feature(object):
         for text in self.dataset:
             counter = 0
             valid = 0
-            for sentence in nltk.tokenize.sent_tokenize(text):
-                if sentence.startswith('"') and sentence.endswith('"'):
+            for word in nltk.word_tokenize(text):
+                if (len(word) < 2 and not word[0].isalpha()) or word.startswith('$'):
                     continue
-                for word in nltk.word_tokenize(sentence):
-                    if (word.startswith('$')):
-                        continue
 
-                    counter+=1
-                    if (wordnet.synsets(word.lower())):
-                        valid+=1
+                counter+=1
+                if (wordnet.synsets(word.lower())):
+                    valid+=1
             array.append(float(valid/counter))
 
         return np.matrix(array)

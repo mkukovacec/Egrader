@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LinearRegression
 import features as all_features
+import rulers as ruler_score
 import os.path
 import pickle
 
@@ -12,14 +13,15 @@ def transform(data, module=None):
     for feature in features:
         feat = feature(data)
         feature_values = feat.run()
-        print (feature_values)
+        print ("{0} {1}".format(feature, feature_values))
         matrix = np.concatenate((matrix, feature_values.T), axis=1)
-
     return np.array(matrix, dtype=np.float64)
 
-def preprocess_text(text):
+def rule_score(module, essay_title, essay_text):
 
-    pass
+    score = ruler_score.calculate_score(module, essay_title, essay_text)
+
+    return score
 
 def load_model(folder_name, module):
     filename = folder_name+'/'+module+'_module'
