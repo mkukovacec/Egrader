@@ -17,17 +17,14 @@ class Feature(object):
         for text in self.dataset:
             counter = 0
             uncommon = 0
-            for sentence in nltk.tokenize.sent_tokenize(text):
-                if sentence.startswith('"') and sentence.endswith('"'):
+            for word in nltk.word_tokenize(text):
+                if not wordnet.synsets(word.lower()) or not word[0].isalpha():
                     continue
-                for word in nltk.word_tokenize(sentence):
-                    if not wordnet.synsets(word.lower()) or not word[0].isalpha():
-                        continue
 
-                    counter+=1
+                counter+=1
 
-                    if (word.lower() not in res.__words__):
-                        uncommon+=1
+                if (word.lower() not in res.__words__):
+                    uncommon+=1
             if counter == 0:
                 array.append(0.0)
             else:

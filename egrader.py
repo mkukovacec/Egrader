@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 from util import transform, load_model, rule_score
 import numpy as np
+import nltk
 app = Flask(__name__)
 
 modules = {}
@@ -28,7 +29,18 @@ def predictor(essay_title = None, essay_text = None, module=None):
         return '0'
 
     result = modules[module].predict(transform(np.array([essay_text]), module))
-    return "{0}/1".format(round(result[0], 3))
+    return "{0}/1".format(round(adjust_score(result[0], essay_text), 3))
+
+def adjust_score(result, text):
+    text_length = len(nltk.word_tokenize(text))
+    if text_length < 200:
+        divisor = 1.01 ** (200 - text_length)
+        return result / divisor
+    if text_length > 800:
+        divisor = 1.01 ** (text_length - 200)
+        return result / divisor
+
+    return result
 
 def rule_out(essay_title, essay_text, module = None):
     result = rule_score(module, essay_title, essay_text)

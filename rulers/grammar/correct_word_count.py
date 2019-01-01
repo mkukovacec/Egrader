@@ -1,6 +1,7 @@
 import numpy as np
 import nltk
 from nltk.corpus import wordnet
+import rulers.grammar.resources as res
 
 class Ruler(object):
 
@@ -12,14 +13,13 @@ class Ruler(object):
         self.text = text
 
     def run(self):
-
         counter = 0
         valid = 0
         for word in nltk.word_tokenize(self.text):
-            if (len(word) < 2 and not word[0].isalpha()) or word.startswith('$'):
+            if not word[0].isalpha():
                 continue
 
             counter+=1
-            if (wordnet.synsets(word.lower())):
+            if (wordnet.synsets(word.lower()) or word.lower() in res.__words__):
                 valid+=1
         return float(valid/counter)
