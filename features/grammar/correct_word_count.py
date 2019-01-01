@@ -17,7 +17,7 @@ class Feature(object):
             counter = 0
             valid = 0
             for word in nltk.word_tokenize(text):
-                if (len(word) < 2 and not word[0].isalpha()) or word.startswith('$'):
+                if not word[0].isalpha():
                     continue
 
                 counter+=1

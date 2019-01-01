@@ -28,12 +28,12 @@ def predictor(essay_title = None, essay_text = None, module=None):
         return '0'
 
     result = modules[module].predict(transform(np.array([essay_text]), module))
-    return "{0}/1".format(round(result[0][0], 3))
+    return "{0}/1".format(round(result[0], 3))
 
 def rule_out(essay_title, essay_text, module = None):
     result = rule_score(module, essay_title, essay_text)
 
-    return "{0}/1".format(round(result, 3)) 
+    return "{0}/1".format(round(result, 3))
 
 
 def empty(variable):

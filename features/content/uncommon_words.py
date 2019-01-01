@@ -21,7 +21,7 @@ class Feature(object):
                 if sentence.startswith('"') and sentence.endswith('"'):
                     continue
                 for word in nltk.word_tokenize(sentence):
-                    if (not wordnet.synsets(word.lower()) or word.startswith('$')):
+                    if not wordnet.synsets(word.lower()) or not word[0].isalpha():
                         continue
 
                     counter+=1

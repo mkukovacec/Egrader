@@ -17,7 +17,7 @@ class Feature(object):
             counter = 0
             appeared = {}
             for word in nltk.word_tokenize(text):
-                if (not wordnet.synsets(word.lower()) or len(word)<2 and not word[0].isalpha()) or word.startswith('$'):
+                if not wordnet.synsets(word.lower()) or not word[0].isalpha():
                     continue
 
                 counter+=1
@@ -26,6 +26,6 @@ class Feature(object):
             if counter == 0:
                 array.append(0.0)
             else:
-                array.append(float(len(word)/counter))
+                array.append(float(len(appeared)/counter))
 
         return np.matrix(array)

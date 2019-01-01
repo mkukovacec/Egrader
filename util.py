@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LinearRegression
 import features as all_features
@@ -22,6 +23,17 @@ def rule_score(module, essay_title, essay_text):
     score = ruler_score.calculate_score(module, essay_title, essay_text)
 
     return score
+
+def preprocess_data(data):
+    toReturn = pd.DataFrame([])
+    for i in range(1,9):
+        set_i = data[data['essay_set'] == i]
+        rating_columns = set_i.columns.values[3:].tolist()
+        set_i['avg_score']=set_i[rating_columns].mean(axis=1)
+        set_i['avg_score']=((set_i[rating_columns]-set_i[rating_columns].min())/(set_i[rating_columns].max()-set_i[rating_columns].min())).mean(axis=1)
+        toReturn=toReturn.append(set_i)
+
+    return toReturn
 
 def load_model(folder_name, module):
     filename = folder_name+'/'+module+'_module'
