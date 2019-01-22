@@ -1,7 +1,7 @@
 import numpy as np
 import nltk
 from nltk.corpus import wordnet
-import rulers.grammar.resources as res
+import resources as res
 
 class Ruler(object):
 

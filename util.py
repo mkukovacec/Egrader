@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
 import features as all_features
 import rulers as ruler_score
 import os.path
@@ -19,7 +20,6 @@ def transform(data, module=None):
     return np.array(matrix, dtype=np.float64)
 
 def rule_score(module, essay_title, essay_text):
-
     score = ruler_score.calculate_score(module, essay_title, essay_text)
 
     return score
@@ -48,10 +48,10 @@ def dump_model(model, filename):
         print ("Model dumped into: {}".format(filename))
 
 def tune_parameters(xs, ys):
-    parameters = {'fit_intercept':[True,False], 'normalize':[True,False], 'copy_X':[True, False]}
-    lr = LinearRegression()
+    parameters = {'alpha':[x*1.0/20 for x in range(20, 0, -1)]}
+    ridge = Ridge()
 
-    grid = GridSearchCV(estimator=lr, param_grid=parameters, cv=5, scoring = 'neg_mean_squared_error', )
+    grid = GridSearchCV(estimator=ridge, param_grid=parameters, cv=5, scoring = 'neg_mean_squared_error', )
     grid.fit(xs, ys)
     print ("---best parameters: {0}".format(grid.best_params_))
     return grid.best_params_
@@ -69,7 +69,7 @@ def get_trained_model(xs, ys, module=None):
     print("---------------------------------")
 
 def train_model(xs, ys, params):
-    lr = LinearRegression(**params)
+    lr = Ridge(**params)
     lr.fit(xs, ys)
 
     return lr

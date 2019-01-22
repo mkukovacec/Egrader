@@ -1,4 +1,4 @@
-import features.content.resources as res
+import resources as res
 import numpy as np
 import nltk
 from nltk.corpus import wordnet
