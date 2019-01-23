@@ -20,6 +20,6 @@ class Ruler(object):
                 continue
 
             counter+=1
-            if (wordnet.synsets(word.lower()) or word.lower() in res.__words__):
+            if (wordnet.synsets(word.lower()) or word.lower() in res.__words__ or word.lower() in res.__names__):
                 valid+=1
         return float(valid/counter)

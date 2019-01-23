@@ -1,9 +1,10 @@
 from flask import Flask, request, render_template
 from util import transform, load_model, rule_score
 import numpy as np
+import copy
 import nltk
 from nltk.corpus import wordnet
-import features.content.resources as res
+import resources as res
 from math import sqrt
 app = Flask(__name__)
 
@@ -22,12 +23,15 @@ def index():
 @app.route('/', methods=['POST'])
 def my_form_post():
     essay_title = request.form['title']
+    print(essay_title)
+    current_title = '{0}'.format(essay_title)
+    print(current_title)
     essay_text = request.form['essay']
     return render_template("index.html",
             content_score=predictor(essay_title, essay_text, "content"),
             grammar_score=rule_out(essay_title, essay_text, "grammar"),
             relevance_score=rule_out(essay_title, essay_text, "relevance"),
-            title=essay_title, essay=essay_text)
+            title=current_title, essay=essay_text)
 
 def predictor(essay_title = None, essay_text = None, module=None):
     if empty(essay_title) or empty(essay_text) or empty(module):
@@ -59,8 +63,8 @@ def adjust_score_unique_words(result, words):
 
 def adjust_score_text_length(result, words):
     text_length = len(words)
-    if text_length < 200:
-        divisor = 1.01 ** (200 - text_length)
+    if text_length < 100:
+        divisor = 1.01 ** (100 - text_length)
         return result / divisor
     if text_length > 800:
         divisor = 1.01 ** (text_length - 800)

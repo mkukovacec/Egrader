@@ -3,8 +3,6 @@ import nltk
 from nltk.corpus import wordnet
 import resources as res
 
-#Case checker za svaku rijec
-#socketio
 # koliko rijeci se koristi
 
 class Ruler(object):
@@ -40,9 +38,11 @@ class Ruler(object):
                 if not word[0].isalpha():
                     continue
 
-                if i == 0 and if first_capital(word):
+                if i == 0 and first_capital(word):
                     valid += 1
                 elif i > 0 and all_lower(word):
+                    valid += 1
+                elif i > 0 and word.lower() in res.__names__ and first_capital(word):
                     valid += 1
 
                 counter+=1
