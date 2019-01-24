@@ -54,6 +54,7 @@ def tune_parameters(xs, ys):
     grid = GridSearchCV(estimator=ridge, param_grid=parameters, cv=5, scoring = 'neg_mean_squared_error', )
     grid.fit(xs, ys)
     print ("---best parameters: {0}".format(grid.best_params_))
+    print ("---best score: {0}".format(str(grid.best_score_)))
     return grid.best_params_
 
 def get_trained_model(xs, ys, module=None):

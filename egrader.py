@@ -1,5 +1,7 @@
-from flask import Flask, request, render_template
+from flask import Flask, redirect, url_for, request, jsonify
+from flask_cors import CORS
 from util import transform, load_model, rule_score
+from dlgrader import DLGrader
 import numpy as np
 import copy
 import nltk
@@ -7,38 +9,29 @@ from nltk.corpus import wordnet
 import resources as res
 from math import sqrt
 app = Flask(__name__)
+CORS(app)
 
 modules = {}
 modules['content'] = load_model('models','content')
 modules['grammar'] = load_model('models','grammar')
+dlmodel = DLGrader('models/GoogleNews-vectors-negative300.bin', 'models/best_model.h5')
 
-@app.route('/')
-def index():
-    return render_template("index.html",
-            content_score=predictor('', '', "content"),
-            grammar_score=rule_out('', '', "grammar"),
-            relevance_score=rule_out('', '', "relevance"),
-            title='', essay='')
-
-@app.route('/', methods=['POST'])
+@app.route('/grade', methods=['POST'])
 def my_form_post():
-    essay_title = request.form['title']
-    print(essay_title)
-    current_title = '{0}'.format(essay_title)
-    print(current_title)
-    essay_text = request.form['essay']
-    return render_template("index.html",
-            content_score=predictor(essay_title, essay_text, "content"),
-            grammar_score=rule_out(essay_title, essay_text, "grammar"),
-            relevance_score=rule_out(essay_title, essay_text, "relevance"),
-            title=current_title, essay=essay_text)
+    essay_title = request.json['title']
+    essay_text = request.json['text']
+    content_score=predictor(essay_title, essay_text, "content")
+    grammar_score=rule_out(essay_title, essay_text, "grammar")
+    relevance_score=rule_out(essay_title, essay_text, "relevance")
+    dl_score=grader(essay_title, essay_text)
+    return jsonify(dlscore=dl_score, mlscore=content_score, grammar=grammar_score, relevance=relevance_score)
 
 def predictor(essay_title = None, essay_text = None, module=None):
     if empty(essay_title) or empty(essay_text) or empty(module):
-        return '0/100'
+        return '0.0'
 
     result = modules[module].predict(transform(np.array([essay_text]), module))
-    return "{0}/100".format(round(adjust_score(result[0], essay_text), 2))
+    return "{0}".format(round(adjust_score(result[0], essay_text), 2))
 
 def adjust_score(result, text):
     words = nltk.word_tokenize(text)
@@ -78,12 +71,18 @@ def adjust_score_text_length(result, words):
 
 def rule_out(essay_title, essay_text, module = None):
     if empty(essay_title) or empty(essay_text) or empty(module):
-        return '0/100'
+        return '0.0'
 
     result = rule_score(module, essay_title, essay_text)
     result *= 100.0
-    return "{0}/100".format(round(result, 2))
+    return "{0}".format(round(result, 2))
 
+def grader(essay_title, essay_text):
+    if empty(essay_title) or empty(essay_text):
+        return '0.0'
+
+    result = dlmodel.grade(essay_text)
+    return "{0}".format(result)
 
 def empty(variable):
     if variable is None or len(variable)==0:
